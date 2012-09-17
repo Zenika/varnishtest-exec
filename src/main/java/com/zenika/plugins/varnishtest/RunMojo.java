@@ -25,6 +25,12 @@ public class RunMojo extends AbstractMojo {
 	
 	@Parameter(defaultValue = "${project.build.directory}/varnishtest")
 	private File outputDirectory;
+	
+	@Parameter(defaultValue = "varnishtest")
+	private String varnishtestCommand;
+	
+	@Parameter(defaultValue = "varnishd")
+	private String varnishdCommand;
     
 	@Parameter
 	private List<String> includes;
@@ -37,9 +43,9 @@ public class RunMojo extends AbstractMojo {
 		
 		outputDirectory.mkdirs();
 		
-		CommandLine commandLine = new CommandLine("varnishtest");
-		commandLine.addArgument("-Dvarnishd=varnishd", false);
-		commandLine.addArgument("-Dproject.basedir=" + getBasedir(), true);
+		CommandLine commandLine = new CommandLine(varnishtestCommand);
+		addMacro(commandLine, "varnishd", varnishdCommand);
+		addMacro(commandLine, "project.basedir", getBasedir());
 		
 		for (String testCase : getTestCases()) {
 			VarnishtestRunner runner = new VarnishtestRunner(commandLine);
@@ -75,5 +81,9 @@ public class RunMojo extends AbstractMojo {
 			return DEFAULT_INCLUDE;
 		}
 		return includes.toArray(EMPTY_STRING_ARRAY);
+	}
+	
+	private void addMacro(CommandLine commandLine, String name, Object value) {
+		commandLine.addArgument("-D" + name + "=" + value);
 	}
 }
