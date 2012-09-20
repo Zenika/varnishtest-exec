@@ -59,10 +59,12 @@ public class RunMojo extends AbstractMojo {
 			VarnishtestRunner runner = new VarnishtestRunner(commandLine);
 			runner.runTestCase(this, new File(getBasedir(), testCase), 20);
 		}
-		
 	}
 	
-	private void addMacro(CommandLine commandLine, String name, Object value) {
+	private void addMacro(CommandLine commandLine, String name, Object value) throws MojoFailureException {
+		if (macros != null && macros.containsKey(name)) {
+			throw new MojoFailureException("The macro `" + name + "' is not allowed");
+		}
 		commandLine.addArgument("-D" + name + "=" + value);
 	}
 	
@@ -71,10 +73,8 @@ public class RunMojo extends AbstractMojo {
 			return;
 		}
 		
-		// TODO validate macros map against hard coded keys
-		
 		for (Map.Entry<String, String> macro : macros.entrySet()) {
-			addMacro(commandLine, macro.getKey(), macro.getValue());
+			commandLine.addArgument("-D" + macro.getKey() + "=" + macro.getValue());
 		}
 	}
 	
