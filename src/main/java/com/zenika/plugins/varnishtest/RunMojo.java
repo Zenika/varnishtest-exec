@@ -65,7 +65,7 @@ public class RunMojo extends AbstractMojo {
 		if (macros != null && macros.containsKey(name)) {
 			throw new MojoFailureException("The macro `" + name + "' is not allowed");
 		}
-		commandLine.addArgument("-D" + name + "=" + value);
+		commandLine.addArgument("-D" + name + "=" + value, false);
 	}
 	
 	private void addMacros(CommandLine commandLine) {
@@ -74,7 +74,7 @@ public class RunMojo extends AbstractMojo {
 		}
 		
 		for (Map.Entry<String, String> macro : macros.entrySet()) {
-			commandLine.addArgument("-D" + macro.getKey() + "=" + macro.getValue());
+			commandLine.addArgument("-D" + macro.getKey() + "=" + macro.getValue(), false);
 		}
 	}
 	

@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.exec.CommandLine;
-import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.ExecuteException;
 import org.apache.commons.exec.ExecuteWatchdog;
 import org.apache.commons.exec.Executor;
@@ -24,8 +23,7 @@ class VarnishtestRunner {
 	
 	void runTestCase(Mojo mojo, File testCase, int timeout) throws MojoExecutionException, MojoFailureException {
 		
-		Executor executor = new DefaultExecutor();
-		executor.setStreamHandler( new VarnishtestStreamHandler(mojo) );
+		Executor executor = new VarnishtestExecutor(mojo);
 		
 		if (timeout > 0) {
 			ExecuteWatchdog watchdog = new ExecuteWatchdog( TimeUnit.SECONDS.toMillis(timeout) );
@@ -33,7 +31,7 @@ class VarnishtestRunner {
 		}
 		
 		CommandLine testCaseCommandLine = new CommandLine(commandLine);
-		testCaseCommandLine.addArgument(testCase.getPath());
+		testCaseCommandLine.addArgument(testCase.getPath(), false);
 		
 		try {
 			mojo.getLog().info("Executing : " + testCaseCommandLine);
