@@ -8,15 +8,12 @@ import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.ExecuteStreamHandler;
 import org.apache.commons.exec.environment.EnvironmentUtils;
-import org.apache.maven.plugin.Mojo;
+import org.apache.maven.plugin.logging.Log;
 
 class VarnishtestExecutor extends DefaultExecutor {
 	
-	VarnishtestExecutor(Mojo mojo) {
-		if (mojo == null) {
-			throw new IllegalArgumentException("Null mojo");
-		}
-		super.setStreamHandler(new VarnishtestStreamHandler(mojo));
+	VarnishtestExecutor(Log log) {
+		super.setStreamHandler(new VarnishtestStreamHandler(log));
 	}
 
 	@Override
@@ -29,6 +26,11 @@ class VarnishtestExecutor extends DefaultExecutor {
 		throw new UnsupportedOperationException();
 	}
 	
+	@Override
+	public VarnishtestStreamHandler getStreamHandler() {
+		return (VarnishtestStreamHandler) super.getStreamHandler();
+	}
+
 	@Override
 	public void setStreamHandler(ExecuteStreamHandler streamHandler) {
 		throw new UnsupportedOperationException();

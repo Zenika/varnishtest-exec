@@ -27,8 +27,8 @@ public class RunMojo extends AbstractMojo {
 	@Component
 	private MavenProject project;
 	
-	@Parameter(defaultValue = "${project.build.directory}/varnishtest", property = "varnishtest.outputDirectory")
-	private File outputDirectory;
+	@Parameter(defaultValue = "${project.build.directory}/varnishtest-reports", property = "varnishtest.reportsDirectory")
+	private File reportsDirectory;
 	
 	@Parameter(defaultValue = "varnishtest", property = "varnishtest.varnishtestCommand")
 	private String varnishtestCommand;
@@ -48,7 +48,7 @@ public class RunMojo extends AbstractMojo {
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		
-		outputDirectory.mkdirs();
+		reportsDirectory.mkdirs();
 		
 		CommandLine commandLine = new CommandLine(varnishtestCommand);
 		addMacro(commandLine, "varnishd", varnishdCommand);
@@ -56,8 +56,18 @@ public class RunMojo extends AbstractMojo {
 		addMacros(commandLine);
 		
 		for (String testCase : getTestCases()) {
-			VarnishtestRunner runner = new VarnishtestRunner(commandLine);
-			runner.runTestCase(this, new File(getBasedir(), testCase), 20);
+			VarnishtestRunner runner = null;
+			try {
+				runner = new VarnishtestRunner(commandLine);
+				runner.runTestCase(getLog(), new File(getBasedir(), testCase), 20);
+				// TODO report success
+			}
+			catch (MojoFailureException e) {
+				if (runner != null) {
+					// TODO report error
+				}
+				throw e;
+			}
 		}
 	}
 	

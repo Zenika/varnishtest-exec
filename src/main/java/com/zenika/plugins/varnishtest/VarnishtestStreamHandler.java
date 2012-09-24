@@ -6,9 +6,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.Reader;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.exec.ExecuteStreamHandler;
-import org.apache.maven.plugin.Mojo;
+import org.apache.maven.plugin.logging.Log;
 
 import com.google.common.io.Closeables;
 
@@ -19,13 +21,16 @@ class VarnishtestStreamHandler implements ExecuteStreamHandler {
 	private Thread outputThread = null;
 	private Thread errorThread = null;
 	
-	private final Mojo mojo;
+	private final List<String> logs;
+	private final Log log;
 	
-	VarnishtestStreamHandler(Mojo mojo) {
-		if (mojo == null) {
-			throw new IllegalArgumentException("Null Mojo");
-		}
-		this.mojo = mojo;
+	VarnishtestStreamHandler(Log log) {
+		this.log = log;
+		this.logs = new ArrayList<String>();
+	}
+	
+	List<String> getLogs() {
+		return logs;
 	}
 
 	@Override
@@ -40,6 +45,7 @@ class VarnishtestStreamHandler implements ExecuteStreamHandler {
 
 	@Override
 	public void setProcessInputStream(OutputStream os) throws IOException {
+		// ignore
 	}
 
 	@Override
@@ -74,7 +80,7 @@ class VarnishtestStreamHandler implements ExecuteStreamHandler {
 			}
 		}
 	}
-	
+
 	private class VarnishtestConsoleLogger implements Runnable {
 
 		private final InputStream is;
@@ -99,7 +105,7 @@ class VarnishtestStreamHandler implements ExecuteStreamHandler {
 				}
 			}
 			catch (IOException e) {
-				VarnishtestStreamHandler.this.mojo.getLog().error(e);
+				VarnishtestStreamHandler.this.log.error(e);
 				throw new IllegalStateException(e);
 			}
 			finally {
@@ -110,10 +116,16 @@ class VarnishtestStreamHandler implements ExecuteStreamHandler {
 
 		private void logOutput(String line) {
 			if (threadType == ThreadType.OUTPUT) {
-				VarnishtestStreamHandler.this.mojo.getLog().info(line);
+				if (line.startsWith("#")) {
+					VarnishtestStreamHandler.this.log.info(line);
+				}
+				else {
+					logs.add(line);
+					VarnishtestStreamHandler.this.log.debug(line);
+				}
 			}
 			else {
-				VarnishtestStreamHandler.this.mojo.getLog().error(line);
+				VarnishtestStreamHandler.this.log.error(line);
 			}
 		}
 	}
