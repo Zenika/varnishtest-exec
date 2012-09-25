@@ -51,22 +51,19 @@ public class RunMojo extends AbstractMojo {
 		reportsDirectory.mkdirs();
 		
 		CommandLine commandLine = new CommandLine(varnishtestCommand);
+		commandLine.addArgument("-v");
+		
 		addMacro(commandLine, "varnishd", varnishdCommand);
 		addMacro(commandLine, "project.basedir", getBasedir());
 		addMacros(commandLine);
 		
 		for (String testCase : getTestCases()) {
-			VarnishtestRunner runner = null;
+			VarnishtestRunner runner = new VarnishtestRunner(commandLine);
 			try {
-				runner = new VarnishtestRunner(commandLine);
 				runner.runTestCase(getLog(), new File(getBasedir(), testCase), 20);
-				// TODO report success
 			}
-			catch (MojoFailureException e) {
-				if (runner != null) {
-					// TODO report error
-				}
-				throw e;
+			finally {
+				// TODO report
 			}
 		}
 	}

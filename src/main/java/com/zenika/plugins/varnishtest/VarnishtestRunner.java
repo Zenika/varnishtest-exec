@@ -2,8 +2,6 @@ package com.zenika.plugins.varnishtest;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.exec.CommandLine;
@@ -17,14 +15,14 @@ import org.apache.maven.plugin.logging.Log;
 class VarnishtestRunner {
 	
 	private final CommandLine commandLine;
-	private List<String> logs = Collections.emptyList();
+	private VarnishtestReport report;
 	
 	VarnishtestRunner(CommandLine commandLine) {
 		this.commandLine = commandLine;
 	}
 	
-	List<String> getLogs() {
-		return logs;
+	VarnishtestReport getReport() {
+		return report;
 	}
 	
 	void runTestCase(Log log, File testCase, int timeout) throws MojoExecutionException, MojoFailureException {
@@ -44,11 +42,13 @@ class VarnishtestRunner {
 			executor.execute(testCaseCommandLine); // TODO configure environment
 		}
 		catch (ExecuteException e) {
-			logs = executor.getStreamHandler().getLogs();
 			throw new MojoFailureException("ExecuteException : " + e.getMessage(), e);
 		}
 		catch (IOException e) {
 			throw new MojoExecutionException("IOException : " + e.getMessage(), e);
+		}
+		finally {
+			report = executor.getStreamHandler().getReport();
 		}
 		
 	}

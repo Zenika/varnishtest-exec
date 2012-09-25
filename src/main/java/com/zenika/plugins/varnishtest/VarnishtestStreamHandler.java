@@ -6,8 +6,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.Reader;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.commons.exec.ExecuteStreamHandler;
 import org.apache.maven.plugin.logging.Log;
@@ -21,16 +19,16 @@ class VarnishtestStreamHandler implements ExecuteStreamHandler {
 	private Thread outputThread = null;
 	private Thread errorThread = null;
 	
-	private final List<String> logs;
+	private final VarnishtestReport report;
 	private final Log log;
 	
 	VarnishtestStreamHandler(Log log) {
 		this.log = log;
-		this.logs = new ArrayList<String>();
+		this.report = new VarnishtestReport();
 	}
 	
-	List<String> getLogs() {
-		return logs;
+	VarnishtestReport getReport() {
+		return report;
 	}
 
 	@Override
@@ -101,6 +99,7 @@ class VarnishtestStreamHandler implements ExecuteStreamHandler {
 				
 				String line = null;
 				while ((line = lineReader.readLine()) != null) {
+					report.log(line);
 					logOutput(line);
 				}
 			}
@@ -120,7 +119,6 @@ class VarnishtestStreamHandler implements ExecuteStreamHandler {
 					VarnishtestStreamHandler.this.log.info(line);
 				}
 				else {
-					logs.add(line);
 					VarnishtestStreamHandler.this.log.debug(line);
 				}
 			}
