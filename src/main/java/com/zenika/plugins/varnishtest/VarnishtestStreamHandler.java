@@ -12,6 +12,12 @@ import org.apache.maven.plugin.logging.Log;
 
 import com.google.common.io.Closeables;
 
+/**
+ * A stream handler that logs varnishtest's output and creates the test report
+ * on the fly.
+ * 
+ * @author Dridi Boukelmoune
+ */
 class VarnishtestStreamHandler implements ExecuteStreamHandler {
 	
 	private enum ThreadType {OUTPUT, ERROR};
@@ -22,30 +28,49 @@ class VarnishtestStreamHandler implements ExecuteStreamHandler {
 	private final VarnishtestReport report;
 	private final Log log;
 	
+	/**
+	 * Constructor.
+	 * @param log the Maven logger
+	 */
 	VarnishtestStreamHandler(Log log) {
 		this.log = log;
 		this.report = new VarnishtestReport();
 	}
 	
+	/**
+	 * @return the varnishtest report
+	 */
 	VarnishtestReport getReport() {
 		return report;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void setProcessOutputStream(final InputStream is) {
 		outputThread = new Thread(new VarnishtestConsoleLogger(is, ThreadType.OUTPUT));
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void setProcessErrorStream(final InputStream is) {
 		errorThread = new Thread(new VarnishtestConsoleLogger(is, ThreadType.ERROR));
 	}
 
+	/**
+	 * We do not write in varnishtest's standard output, ignored.
+	 */
 	@Override
 	public void setProcessInputStream(OutputStream os) throws IOException {
 		// ignore
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void start() {
 		if (outputThread != null) {
@@ -56,6 +81,9 @@ class VarnishtestStreamHandler implements ExecuteStreamHandler {
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void stop() {
 		if (outputThread != null) {
@@ -89,6 +117,9 @@ class VarnishtestStreamHandler implements ExecuteStreamHandler {
 			this.threadType = threadType;
 		}
 
+		/**
+		 * Logs varnishtest's output and feeds the report.
+		 */
 		@Override
 		public void run() {
 			Reader reader = null;

@@ -15,6 +15,11 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.DirectoryScanner;
 
+/**
+ * Run tests with varnishtest.
+ * 
+ * @author Dridi Boukelmoune
+ */
 @Mojo(name = "run",
 		threadSafe = false,
 		requiresProject = true,
@@ -27,24 +32,68 @@ public class RunMojo extends AbstractMojo {
 	@Component
 	private MavenProject project;
 	
+	/**
+	 * Base directory where all reports are written to.
+	 * TODO write reports
+	 */
 	@Parameter(defaultValue = "${project.build.directory}/varnishtest-reports", property = "varnishtest.reportsDirectory")
 	private File reportsDirectory;
 	
+	/**
+	 * The command to run varnishtest.
+	 */
 	@Parameter(defaultValue = "varnishtest", property = "varnishtest.varnishtestCommand")
 	private String varnishtestCommand;
 	
+	/**
+	 * The command to run varnishd.
+	 */
 	@Parameter(defaultValue = "varnishd", property = "varnishtest.varnishdCommand")
 	private String varnishdCommand;
 	
+	/**
+	 * A list of &lt;include> elements specifying the tests (by pattern) that
+	 * should be included in testing. When not specified and when the
+	 * <code>test</code> parameter is not specified, the default includes will
+	 * be <code><br/>
+	 * &lt;includes&gt;<br/>
+	 * &nbsp;&lt;include&gt;src/test/varnish/**.vtc&lt;/include&gt;<br/>
+	 * &lt;/includes&gt;<br/>
+	 * </code>
+	 * <p/>
+	 * Each include item may also contain a comma-separated sublist of items,
+	 * which will be treated as multiple &nbsp;&lt;include> entries.<br/>
+	 * <p/>
+	 */
 	@Parameter
 	private List<String> includes;
 	
+	/**
+	 * A list of &lt;exclude> elements specifying the tests (by pattern) that
+	 * should be excluded in testing. When not specified and when the
+	 * <code>test</code> parameter is not specified, the default excludes will
+	 * be <code><br/>
+	 * &lt;excludes/&gt;<br/>
+	 * </code>(which excludes nothing).<br>
+	 * <p/>
+	 * Each exclude item may also contain a comma-separated sublist of items,
+	 * which will be treated as multiple &nbsp;&lt;exclude> entries.<br/>
+	 */
 	@Parameter
 	private List<String> excludes;
 	
+	/**
+	 * List of macros to pass to the varnishtest.
+	 */
 	@Parameter
 	private Map<String, String> macros;
 	
+	/**
+	 * Runs the tests.
+	 * 
+	 * @throws MojoExecutionException if communication with varnishtest failed
+	 * @throws MojoFailureException if a test case fails
+	 */
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		

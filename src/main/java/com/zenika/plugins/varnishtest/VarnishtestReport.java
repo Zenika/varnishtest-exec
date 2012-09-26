@@ -5,7 +5,12 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-
+/**
+ * The varnishtest report class grabs information about test cases from
+ * varnishtest output.
+ * 
+ * @author Dridi Boukelmoune
+ */
 class VarnishtestReport {
 
 	private static final Pattern TITLE_PATTERN = Pattern.compile("^\\*\\s+top\\s+\\d+\\.\\d+ TEST Test (.+)$");
@@ -14,15 +19,15 @@ class VarnishtestReport {
 	
 	private static final String SUCCCESS = "passed";
 	
-	private final List<String> logs;
+	private final List<String> logs = new ArrayList<String>();
 	private String title = null;
 	private String duration = null;
 	private String success = null;
 	
-	VarnishtestReport() {
-		this.logs = new ArrayList<String>();
-	}
-	
+	/**
+	 * Gathers a line of text from varnishtest output.
+	 * @param line varnishtest output
+	 */
 	void log(String line) {
 		logs.add(line);
 		title    = checkPattern(line, TITLE_PATTERN,    title);
@@ -38,14 +43,23 @@ class VarnishtestReport {
 		return matcher.matches() ? matcher.group(1) : null;
 	}
 	
+	/**
+	 * @return the test case's title or {@code null}
+	 */
 	String getTitle() {
 		return title;
 	}
-
+	
+	/**
+	 * @return the test case's duration in seconds or {@code null}
+	 */
 	String getDuration() {
 		return duration;
 	}
-
+	
+	/**
+	 * @return {@code true} if the test case succeeded
+	 */
 	boolean getSuccess() {
 		return SUCCCESS.equals(success);
 	}
