@@ -103,13 +103,12 @@ public class RunMojo extends AbstractMojo {
 		commandLine.addArgument("-v");
 		
 		addMacro(commandLine, "varnishd", varnishdCommand);
-		addMacro(commandLine, "project.basedir", getBasedir());
 		addMacros(commandLine);
 		
 		for (String testCase : getTestCases()) {
 			VarnishtestRunner runner = new VarnishtestRunner(commandLine);
 			try {
-				runner.runTestCase(getLog(), new File(getBasedir(), testCase), 20);
+				runner.runTestCase(getLog(), new File(getBasedir(), testCase), 20); // FIXME make timeout configurable
 			}
 			finally {
 				// TODO report
