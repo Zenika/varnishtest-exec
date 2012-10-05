@@ -1,5 +1,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
 	<modelVersion>4.0.0</modelVersion>
 
 <!-- 	XXX parent declaration -->
@@ -16,7 +17,28 @@
 
 	<name>Maven plugin for varnishtest</name>
 	<url>http://github.com/zenika/varnishtest-maven-plugin</url>
-	
+
+	<inceptionYear>2012</inceptionYear>
+
+	<developers>
+		<developer>
+			<id>dridi.boukelmoune@zenika.com</id>
+			<email>dridi.boukelmoune@zenika.com</email>
+			<name>Dridi Boukelmoune</name>
+			<organization>Zenika</organization>
+			<organizationUrl>http://www.zenika.com/</organizationUrl>
+		</developer>
+	</developers>
+
+	<contributors>
+		<contributor>
+			<email>olivier.bourgain@zenika.com</email>
+			<name>Olivier Bourgain</name>
+			<organization>Zenika</organization>
+			<organizationUrl>http://www.zenika.com/</organizationUrl>
+		</contributor>
+	</contributors>
+
 	<properties>
 		<it.server.port>9080</it.server.port>
 		<maven.plugin.plugin.version>3.1</maven.plugin.plugin.version>
@@ -28,7 +50,7 @@
 		-->
 		<invoker.mavenOpts></invoker.mavenOpts>
 	</properties>
-	
+
 	<build>
 		<defaultGoal>clean verify</defaultGoal>
 		<plugins>
@@ -97,7 +119,7 @@
 			</plugin>
 		</plugins>
 	</build>
-	
+
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.maven.plugin-tools</groupId>
