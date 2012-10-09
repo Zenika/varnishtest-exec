@@ -1,10 +1,10 @@
 package com.zenika.plugins.varnishtest;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.exec.CommandLine;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -14,6 +14,10 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.DirectoryScanner;
+
+import com.zenika.varnishtest.CommandLineBuilder;
+import com.zenika.varnishtest.VarnishtestException;
+import com.zenika.varnishtest.VarnishtestRunner;
 
 /**
  * Run tests with varnishtest.
@@ -99,37 +103,29 @@ public class RunMojo extends AbstractMojo {
 		
 		reportsDirectory.mkdirs();
 		
-		CommandLine commandLine = new CommandLine(varnishtestCommand);
-		commandLine.addArgument("-v");
+		CommandLineBuilder builder = new CommandLineBuilder()
+			.setVarnishtestCommand(varnishtestCommand)
+			.setVarnishdCommand(varnishdCommand);
 		
-		addMacro(commandLine, "varnishd", varnishdCommand);
-		addMacros(commandLine);
+		if (macros != null) {
+			builder.setMacros(macros);
+		}
+		
+		LogOutputHandler handler = new LogOutputHandler(getLog());
 		
 		for (String testCase : getTestCases()) {
-			VarnishtestRunner runner = new VarnishtestRunner(commandLine);
+			VarnishtestRunner runner = new VarnishtestRunner(builder);
 			try {
-				runner.runTestCase(getLog(), new File(getBasedir(), testCase), 20); // FIXME make timeout configurable
-			}
-			finally {
+				runner.runTestCase(new File(getBasedir(), testCase), handler, 20); // FIXME make timeout configurable
 				// TODO report
 			}
-		}
-	}
-	
-	private void addMacro(CommandLine commandLine, String name, Object value) throws MojoFailureException {
-		if (macros != null && macros.containsKey(name)) {
-			throw new MojoFailureException("The macro `" + name + "' is not allowed");
-		}
-		commandLine.addArgument("-D" + name + "=" + value, false);
-	}
-	
-	private void addMacros(CommandLine commandLine) {
-		if (macros == null) {
-			return;
-		}
-		
-		for (Map.Entry<String, String> macro : macros.entrySet()) {
-			commandLine.addArgument("-D" + macro.getKey() + "=" + macro.getValue(), false);
+			catch (VarnishtestException e) {
+				// TODO report
+				throw new MojoFailureException("Test failure : " + testCase, e);
+			}
+			catch (IOException e) {
+				throw new MojoFailureException("An error occured", e);
+			}
 		}
 	}
 	
