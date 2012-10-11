@@ -87,10 +87,16 @@ public class RunMojo extends AbstractMojo {
 	private List<String> excludes;
 	
 	/**
-	 * List of macros to pass to the varnishtest.
+	 * List of macros to pass to varnishtest.
 	 */
 	@Parameter
 	private Map<String, String> macros;
+	
+	/**
+	 * Set this to 'true' to bypass varnish tests entirely.
+	 */
+	@Parameter(defaultValue = "false", property = "varnishtest.skip")
+	private boolean skip = false;
 	
 	/**
 	 * Runs the tests.
@@ -100,6 +106,11 @@ public class RunMojo extends AbstractMojo {
 	 */
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
+		
+		if ( isSkipped() ) {
+			getLog().info("Varnish tests are skipped.");
+			return;
+		}
 		
 		reportsDirectory.mkdirs();
 		
@@ -124,9 +135,17 @@ public class RunMojo extends AbstractMojo {
 				throw new MojoFailureException("Test failure : " + testCase, e);
 			}
 			catch (IOException e) {
-				throw new MojoFailureException("An error occured", e);
+				throw new MojoExecutionException("An error occured", e);
 			}
 		}
+	}
+
+	private boolean isSkipped() {
+		return skip || isPropertyTrueOrEmpty("skipITs") || isPropertyTrueOrEmpty("maven.test.skip");
+	}
+
+	private boolean isPropertyTrueOrEmpty(String property) {
+		return Boolean.getBoolean(property) || "".equals(System.getProperty(property));
 	}
 	
 	private String[] getTestCases() {

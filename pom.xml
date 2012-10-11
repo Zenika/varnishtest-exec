@@ -72,6 +72,9 @@
 						<goals>
 							<goal>descriptor</goal>
 						</goals>
+						<configuration>
+							<skipErrorNoDescriptorsFound>false</skipErrorNoDescriptorsFound>
+						</configuration>
 					</execution>
 					<execution>
 						<id>help-goal</id>
