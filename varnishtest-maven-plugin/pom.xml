@@ -1,0 +1,119 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.zenika</groupId>
+		<artifactId>varnishtest-exec-parent</artifactId>
+		<version>0.1-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>varnishtest-maven-plugin</artifactId>
+	<packaging>maven-plugin</packaging>
+	<name>Maven plugin for varnishtest</name>
+
+	<properties>
+		<it.server.port>9080</it.server.port>
+		<maven.version>2.0.11</maven.version>
+		<maven.plugin.plugin.version>3.1</maven.plugin.plugin.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+		<!--
+			Keep this one empty, by default MAVEN_OPTS leaks into it.
+			It is still possible to override it in the command line.
+		-->
+		<invoker.mavenOpts></invoker.mavenOpts>
+	</properties>
+
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-plugin-plugin</artifactId>
+				<version>${maven.plugin.plugin.version}</version>
+				<configuration>
+					<skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
+				</configuration>
+				<executions>
+					<execution>
+						<id>mojo-descriptor</id>
+						<phase>process-classes</phase>
+						<goals>
+							<goal>descriptor</goal>
+						</goals>
+						<configuration>
+							<skipErrorNoDescriptorsFound>false</skipErrorNoDescriptorsFound>
+						</configuration>
+					</execution>
+					<execution>
+						<id>help-goal</id>
+						<goals>
+							<goal>helpmojo</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-invoker-plugin</artifactId>
+				<version>1.7</version>
+				<configuration>
+					<localRepositoryPath>${project.build.directory}/it-repo</localRepositoryPath>
+					<cloneProjectsTo>${project.build.directory}/it-modules</cloneProjectsTo>
+					<cloneClean>true</cloneClean>
+					<settingsFile>${project.basedir}/src/it/settings.xml</settingsFile>
+					<goals>
+						<goal>verify</goal>
+					</goals>
+					<filterProperties>
+						<it.server.port>${it.server.port}</it.server.port>
+						<varnishtest.plugin.version>${project.version}</varnishtest.plugin.version>
+					</filterProperties>
+					<extraArtifacts>
+						<extraArtifact>org.apache.maven.plugins:maven-clean-plugin:2.5:maven-plugin</extraArtifact>
+						<extraArtifact>org.apache.maven.plugins:maven-resources-plugin:2.5:maven-plugin</extraArtifact>
+						<extraArtifact>org.apache.maven.plugins:maven-compiler-plugin:2.3.2:maven-plugin</extraArtifact>
+						<extraArtifact>org.apache.maven.plugins:maven-surefire-plugin:2.12:maven-plugin</extraArtifact>
+						<extraArtifact>org.apache.maven.plugins:maven-war-plugin:2.1.1:maven-plugin</extraArtifact>
+						<extraArtifact>org.apache.tomcat.maven:tomcat6-maven-plugin:2.0:maven-plugin</extraArtifact>
+						
+						<extraArtifact>org.apache.maven.surefire:surefire-junit3:2.12:jar</extraArtifact>
+						<extraArtifact>org.hamcrest:hamcrest-core:1.1:jar</extraArtifact>
+					</extraArtifacts>
+				</configuration>
+				<executions>
+					<execution>
+						<id>run-integration-tests</id>
+						<goals>
+							<goal>install</goal>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.maven.plugin-tools</groupId>
+			<artifactId>maven-plugin-annotations</artifactId>
+			<version>${maven.plugin.plugin.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.maven</groupId>
+			<artifactId>maven-plugin-api</artifactId>
+			<version>${maven.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.maven</groupId>
+			<artifactId>maven-project</artifactId>
+			<version>${maven.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.zenika</groupId>
+			<artifactId>varnishtest-exec</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+	</dependencies>
+</project>
+
