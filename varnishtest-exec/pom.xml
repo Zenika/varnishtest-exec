@@ -12,11 +12,67 @@
 	<artifactId>varnishtest-exec</artifactId>
 	<name>Varnishtest Java executor</name>
 
+	<properties>
+		<ant.version>1.7.0</ant.version>
+	</properties>
+
+	<build>
+		<testResources>
+			<testResource>
+				<directory>${project.basedir}/src/test/ant</directory>
+				<targetPath>${project.build.directory}/ant</targetPath>
+			</testResource>
+		</testResources>
+		<plugins>
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.7</version>
+				<executions>
+					<execution>
+						<phase>integration-test</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<target>
+								<ant inheritAll="false" antfile="${project.build.directory}/ant/minimal-configuration/build.xml" />
+								<ant inheritAll="false" antfile="${project.build.directory}/ant/write-reports/build.xml" />
+							</target>
+						</configuration>
+					</execution>
+				</executions>
+				<dependencies>
+					<dependency>
+						<groupId>org.apache.ant</groupId>
+						<artifactId>ant</artifactId>
+						<version>${ant.version}</version>
+					</dependency>
+					<dependency>
+						<groupId>org.apache.ant</groupId>
+						<artifactId>ant-antunit</artifactId>
+						<version>1.0</version>
+					</dependency>
+					<dependency>
+						<groupId>${project.groupId}</groupId>
+						<artifactId>${project.artifactId}</artifactId>
+						<version>${project.version}</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+		</plugins>
+	</build>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-exec</artifactId>
 			<version>1.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.ant</groupId>
+			<artifactId>ant</artifactId>
+			<version>${ant.version}</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>

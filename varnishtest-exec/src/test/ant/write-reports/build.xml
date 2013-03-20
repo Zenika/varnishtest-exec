@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+	xmlns:varnishtest="antlib:com.zenika.varnishtest.ant"
+	xmlns:au="antlib:org.apache.ant.antunit"
+	name="write-reports" basedir="." default="test">
+
+	<target name="test" description="Run varnishtest">
+		<varnishtest:run reportsDirectory="target/varnishtest-reports">
+			<fileset dir="src/test/varnish">
+			    <include name="**.vtc"/>
+			</fileset>
+		</varnishtest:run>
+		<au:assertFileExists file="target/varnishtest-reports/TEST-0001-first_test_case.log"/>
+		<au:assertFileExists file="target/varnishtest-reports/TEST-0002-second_test_case.log"/>
+	</target>
+
+</project>
