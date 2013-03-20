@@ -1,4 +1,4 @@
-varnishtest "Test backend launched within Maven"
+varnishtest "backend launched within maven"
 
 varnish v1 -arg "-f ${pwd}/target/config/default.vcl" -start
 

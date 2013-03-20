@@ -86,7 +86,10 @@ public class CommandLineBuilder {
 	}
 
 	/**
-	 * Set a non-empty command line for varnishd.
+	 * Set a non-empty command line for varnishd. This might be needed for
+	 * unprivileged users without {@code /usr/sbin} in their {@code PATH}. In
+	 * that case, instead of running a plain {@code varnishd} command,
+	 * varnishtest could run {@code /usr/sbin/varnishd}.
 	 * @param varnishdCommand the varnishd command
 	 * @return {@code this} builder
 	 * @throws IllegalArgumentException if the command is {@code null} or empty
@@ -190,5 +193,10 @@ public class CommandLineBuilder {
 		}
 		
 		return commandLine;
+	}
+
+	@Override
+	public String toString() {
+		return toCommandLine().toString();
 	}
 }

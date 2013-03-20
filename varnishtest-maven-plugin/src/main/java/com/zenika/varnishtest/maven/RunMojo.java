@@ -1,4 +1,4 @@
-package com.zenika.plugins.varnishtest;
+package com.zenika.varnishtest.maven;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,6 +17,7 @@ import org.codehaus.plexus.util.DirectoryScanner;
 
 import com.zenika.varnishtest.CommandLineBuilder;
 import com.zenika.varnishtest.VarnishtestException;
+import com.zenika.varnishtest.VarnishtestReport;
 import com.zenika.varnishtest.VarnishtestRunner;
 
 /**
@@ -29,69 +30,72 @@ import com.zenika.varnishtest.VarnishtestRunner;
 		requiresProject = true,
 		defaultPhase = LifecyclePhase.INTEGRATION_TEST)
 public class RunMojo extends AbstractMojo {
-	
+
 	private static final String[] EMPTY_STRING_ARRAY = new String[] {};
 	private static final String[] DEFAULT_INCLUDE = new String[] { "src/test/varnish/**.vtc" };
-	
+
 	@Component
 	private MavenProject project;
-	
+
 	/**
 	 * Base directory where all reports are written to.
-	 * TODO write reports
 	 */
 	@Parameter(defaultValue = "${project.build.directory}/varnishtest-reports", property = "varnishtest.reportsDirectory")
 	private File reportsDirectory;
-	
+
 	/**
-	 * The command to run varnishtest.
+	 * The command to run for varnishtest, for instance
+	 * {@code /usr/local/bin/varnishtest}.
 	 */
 	@Parameter(defaultValue = "varnishtest", property = "varnishtest.varnishtestCommand")
 	private String varnishtestCommand;
-	
+
 	/**
-	 * The command to run varnishd.
+	 * The command to run for varnishd, for instance {@code /usr/sbin/varnishd}
+	 * for unprivileged users without {@code /usr/sbin} in their {@code PATH}.
 	 */
 	@Parameter(defaultValue = "varnishd", property = "varnishtest.varnishdCommand")
 	private String varnishdCommand;
-	
+
 	/**
-	 * A list of &lt;include> elements specifying the tests (by pattern) that
-	 * should be included in testing. When not specified and when the
-	 * <code>test</code> parameter is not specified, the default includes will
-	 * be <code><br/>
-	 * &lt;includes&gt;<br/>
-	 * &nbsp;&lt;include&gt;src/test/varnish/**.vtc&lt;/include&gt;<br/>
-	 * &lt;/includes&gt;<br/>
-	 * </code>
+	 * A list of {@code<include>} elements specifying the tests (by pattern)
+	 * that should be included in testing. When not specified and when the
+	 * {@code test} parameter is not specified, the default includes will be
+	 * <pre> {@code<includes>
+	 *   <include>src/test/varnish/**.vtc</include>
+ 	 * </includes>}</pre>
 	 * <p/>
 	 * Each include item may also contain a comma-separated sublist of items,
-	 * which will be treated as multiple &nbsp;&lt;include> entries.<br/>
-	 * <p/>
+	 * which will be treated as multiple {@code<include>} entries.
 	 */
 	@Parameter
 	private List<String> includes;
-	
+
 	/**
-	 * A list of &lt;exclude> elements specifying the tests (by pattern) that
-	 * should be excluded in testing. When not specified and when the
-	 * <code>test</code> parameter is not specified, the default excludes will
-	 * be <code><br/>
-	 * &lt;excludes/&gt;<br/>
-	 * </code>(which excludes nothing).<br>
+	 * A list of {@code<exclude>} elements specifying the tests (by pattern)
+	 * that should be excluded in testing. When not specified and when the
+	 * {@code test} parameter is not specified, the default excludes will be
+	 * <pre>{@code<excludes/>}</pre>
+	 * (which excludes nothing).
 	 * <p/>
 	 * Each exclude item may also contain a comma-separated sublist of items,
-	 * which will be treated as multiple &nbsp;&lt;exclude> entries.<br/>
+	 * which will be treated as multiple {@code<exclude>} entries.
 	 */
 	@Parameter
 	private List<String> excludes;
-	
+
 	/**
 	 * List of macros to pass to varnishtest.
 	 */
 	@Parameter
 	private Map<String, String> macros;
-	
+
+	/**
+	 * Per-test timeout in seconds.
+	 */
+	@Parameter(defaultValue = "20", property = "varnishtest.timeout")
+	private int timeout;
+
 	/**
 	 * Set this to 'true' to bypass varnish tests entirely.
 	 */
@@ -112,7 +116,7 @@ public class RunMojo extends AbstractMojo {
 			return;
 		}
 		
-		reportsDirectory.mkdirs();
+		createReportsDirectory();
 		
 		CommandLineBuilder builder = new CommandLineBuilder()
 			.setVarnishtestCommand(varnishtestCommand)
@@ -122,21 +126,41 @@ public class RunMojo extends AbstractMojo {
 			builder.setMacros(macros);
 		}
 		
+		int testCaseCounter = 1;
 		LogOutputHandler handler = new LogOutputHandler(getLog());
 		
 		for (String testCase : getTestCases()) {
 			VarnishtestRunner runner = new VarnishtestRunner(builder);
 			try {
-				runner.runTestCase(new File(getBasedir(), testCase), handler, 20); // FIXME make timeout configurable
-				// TODO report
+				File testCaseFile = new File(getBasedir(), testCase);
+				VarnishtestReport report = runner.runTestCase(testCaseFile, handler, timeout);
+				writeReport(report, testCaseCounter);
 			}
 			catch (VarnishtestException e) {
-				// TODO report
+				writeReport(e.getReport(), testCaseCounter);
 				throw new MojoFailureException("Test failure : " + testCase, e);
 			}
 			catch (IOException e) {
 				throw new MojoExecutionException("An error occured", e);
 			}
+			testCaseCounter++;
+		}
+	}
+
+	private void createReportsDirectory() throws MojoExecutionException {
+		reportsDirectory.mkdirs();
+
+		if ( ! reportsDirectory.exists() ) {
+			throw new MojoExecutionException("Varnishtest reports directory not created : " + reportsDirectory);
+		}
+	}
+
+	private void writeReport(VarnishtestReport report, int number) throws MojoExecutionException {
+		try {
+			report.write(reportsDirectory, number);
+		}
+		catch (IOException e) {
+			throw new MojoExecutionException("Could not write varnishtest's report", e);
 		}
 	}
 

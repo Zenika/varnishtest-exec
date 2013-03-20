@@ -11,7 +11,16 @@ public class VarnishtestReportTest {
 	@Test
 	public void shouldGrabTheTestTitle() {
 		VarnishtestReport report = new VarnishtestReport();
-		report.log("*    top   0.0 TEST Test The test case title");
+		report.log("*    top   0.0 TEST /path/to/test.vtc starting");
+		report.log("*    top   0.0 TEST The test case title");
+		Assert.assertEquals("The test case title", report.getTitle());
+	}
+	
+	@Test
+	public void shouldGrabTheTestTitleWithRelativePath() {
+		VarnishtestReport report = new VarnishtestReport();
+		report.log("*    top   0.0 TEST path/to/test.vtc starting");
+		report.log("*    top   0.0 TEST The test case title");
 		Assert.assertEquals("The test case title", report.getTitle());
 	}
 	

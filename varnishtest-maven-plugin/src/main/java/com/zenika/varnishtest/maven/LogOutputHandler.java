@@ -1,4 +1,4 @@
-package com.zenika.plugins.varnishtest;
+package com.zenika.varnishtest.maven;
 
 import java.io.IOException;
 

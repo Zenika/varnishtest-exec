@@ -11,7 +11,7 @@ import org.apache.commons.exec.Executor;
 import org.apache.commons.exec.environment.EnvironmentUtils;
 
 /**
- * An {@link Executor} that creates a process with an array of commnand-line
+ * An {@link Executor} that creates a process with an array of command-line
  * arguments instead of a string.
  * 
  * @author Dridi Boukelmoune
