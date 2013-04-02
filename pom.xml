@@ -3,12 +3,11 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
-<!-- 	XXX parent declaration -->
-<!-- 	<parent> -->
-<!-- 		<groupId>com.zenika</groupId> -->
-<!-- 		<artifactId>zenika-parent</artifactId> -->
-<!-- 		<version>1</version> -->
-<!-- 	</parent> -->
+ 	<parent>
+ 		<groupId>org.sonatype.oss</groupId>
+ 		<artifactId>oss-parent</artifactId>
+ 		<version>7</version>
+ 	</parent>
 
 	<groupId>com.zenika</groupId>
 	<artifactId>varnishtest-exec-parent</artifactId>
@@ -20,9 +19,15 @@
 
 	<inceptionYear>2012</inceptionYear>
 
+	<scm>
+		<connection>scm:git:git@github.com:zenika/varnishtest-exec.git</connection>
+		<developerConnection>scm:git:git@github.com:zenika/varnishtest-exec.git</developerConnection>
+		<url>git@github.com:zenika/varnishtest-exec.git</url>
+	</scm>
+
 	<developers>
 		<developer>
-			<id>dridi.boukelmoune@zenika.com</id>
+			<id>dridi</id>
 			<email>dridi.boukelmoune@zenika.com</email>
 			<name>Dridi Boukelmoune</name>
 			<organization>Zenika</organization>
@@ -38,6 +43,14 @@
 			<organizationUrl>http://www.zenika.com/</organizationUrl>
 		</contributor>
 	</contributors>
+
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

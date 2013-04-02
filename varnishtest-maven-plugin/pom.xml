@@ -110,7 +110,7 @@
 			<version>${maven.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>com.zenika</groupId>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>varnishtest-exec</artifactId>
 			<version>${project.version}</version>
 		</dependency>
