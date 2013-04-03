@@ -1,12 +1,11 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
 		<groupId>com.zenika</groupId>
 		<artifactId>varnishtest-exec-parent</artifactId>
-		<version>0.1-SNAPSHOT</version>
+		<version>0.1</version>
 	</parent>
 
 	<artifactId>varnishtest-maven-plugin</artifactId>
@@ -23,7 +22,7 @@
 			Keep this one empty, by default MAVEN_OPTS leaks into it.
 			It is still possible to override it in the command line.
 		-->
-		<invoker.mavenOpts></invoker.mavenOpts>
+		<invoker.mavenOpts />
 	</properties>
 
 	<build>
