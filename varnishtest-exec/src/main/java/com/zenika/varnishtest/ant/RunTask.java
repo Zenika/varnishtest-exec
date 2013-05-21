@@ -46,9 +46,15 @@ public class RunTask extends Task {
 	private final List<ResourceCollection> collections = new ArrayList<ResourceCollection>();
 	private final LogOutputHandler handler = new LogOutputHandler(this);
 	
+	private File workingDirectory = null;
 	private File reportsDirectory = null;
 	private int timeout = DEFAULT_TIMEOUT;
 	private int testCaseCounter = 1;
+
+	@Override
+	public void init() {
+		workingDirectory = getProject().getBaseDir();
+	}
 
 	/**
 	 * Run the varnish test cases (vtc).
@@ -93,7 +99,7 @@ public class RunTask extends Task {
 	}
 
 	private void runTestCase(Resource resource, int testCaseCounter) {
-		VarnishtestRunner runner = new VarnishtestRunner(builder);
+		VarnishtestRunner runner = new VarnishtestRunner(builder, workingDirectory);
 		try {
 			VarnishtestReport report = runner.runTestCase(new File(resource.toString()), handler, timeout);
 			writeReport(report, testCaseCounter);
@@ -147,10 +153,19 @@ public class RunTask extends Task {
 	 * Set a different command for varnishd, for instance
 	 * {@code /usr/sbin/varnishd} for unprivileged users without
 	 * {@code /usr/sbin} in their {@code PATH}.
-	 * @param varnishtestCommand The command to run
+	 * @param varnishdCommand The command to run
 	 */
 	public void setVarnishdCommand(String varnishdCommand) {
 		builder.setVarnishdCommand(varnishdCommand);
+	}
+
+	/**
+	 * Set the directory in which varnishtest will be executed,
+	 * defaults to the base directory.
+	 * @param workingDirectory The working directory
+	 */
+	public void setWorkingDirectory(File workingDirectory) {
+		this.workingDirectory = workingDirectory;
 	}
 
 	/**

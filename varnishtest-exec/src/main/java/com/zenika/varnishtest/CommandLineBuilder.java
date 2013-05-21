@@ -30,7 +30,7 @@ public class CommandLineBuilder {
 	
 	private static final String MACRO_NAME_REGEX = "\\w+(\\.\\w+)*";
 	private static final Pattern MACRO_NAME_PATTERN = Pattern.compile(MACRO_NAME_REGEX);
-	
+
 	private String varnishtestCommand = "varnishtest";
 	private String varnishdCommand = "varnishd";
 	
@@ -54,7 +54,7 @@ public class CommandLineBuilder {
 		this.varnishdCommand = builder.varnishdCommand;
 		this.macros.putAll(builder.macros);
 	}
-	
+
 	/**
 	 * Returns the varnishtest command, the default is {@code "varnishtest"}.
 	 * @return the varnishtest command
@@ -191,7 +191,7 @@ public class CommandLineBuilder {
 		for (Map.Entry<String, String> macro : macros.entrySet()) {
 			commandLine.addArgument("-D" + macro.getKey() + "=" + macro.getValue(), false);
 		}
-		
+
 		return commandLine;
 	}
 

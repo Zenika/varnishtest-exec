@@ -14,24 +14,30 @@ import org.apache.commons.exec.ExecuteWatchdog;
  * @author Dridi Boukelmoune
  */
 public class VarnishtestRunner {
-	
+
+	private final File workingDirectory;
 	private final CommandLineBuilder commandLineBuilder;
-	
+
 	/**
 	 * Constructor.
 	 * @param commandLineBuilder the command line with common arguments
 	 */
 	public VarnishtestRunner(CommandLineBuilder commandLineBuilder) {
+		this(commandLineBuilder, null);
+	}
+
+	public VarnishtestRunner(CommandLineBuilder commandLineBuilder, File workingDirectory) {
 		if (commandLineBuilder == null) {
 			throw new NullPointerException("Null command line");
 		}
 		this.commandLineBuilder = new CommandLineBuilder(commandLineBuilder);
+		this.workingDirectory = workingDirectory;
 	}
-	
+
 	/**
 	 * Runs a test case.
-	 * 
-	 * @param handler the output handler
+	 *
+	 * @param testCase the test case to run
 	 * 
 	 * @return the report of the test execution
 	 * 
@@ -41,7 +47,7 @@ public class VarnishtestRunner {
 	public VarnishtestReport runTestCase(File testCase) throws VarnishtestException, IOException {
 		return runTestCase(testCase, null, -1);
 	}
-	
+
 	/**
 	 * Runs a test case.
 	 * 
@@ -56,7 +62,7 @@ public class VarnishtestRunner {
 	public VarnishtestReport runTestCase(File testCase, int timeout) throws VarnishtestException, IOException {
 		return runTestCase(testCase, null, timeout);
 	}
-	
+
 	/**
 	 * Runs a test case.
 	 * 
@@ -72,7 +78,7 @@ public class VarnishtestRunner {
 	throws VarnishtestException, IOException {
 		return runTestCase(testCase, handler, -1);
 	}
-	
+
 	/**
 	 * Runs a test case.
 	 * 
@@ -87,18 +93,30 @@ public class VarnishtestRunner {
 	 */
 	public VarnishtestReport runTestCase(File testCase, OutputHandler handler, int timeout)
 	throws VarnishtestException, IOException {
-		
+
+		if (testCase == null) {
+			throw new NullPointerException("Null test case");
+		}
+
 		VarnishtestStreamHandler streamHandler = new VarnishtestStreamHandler(handler);
 		VarnishtestExecutor executor = new VarnishtestExecutor(streamHandler);
-		
+
 		if (timeout > 0) {
 			ExecuteWatchdog watchdog = new ExecuteWatchdog( TimeUnit.SECONDS.toMillis(timeout) );
 			executor.setWatchdog(watchdog);
 		}
-		
+
 		CommandLine testCaseCommandLine = commandLineBuilder.toCommandLine();
-		testCaseCommandLine.addArgument(testCase.getPath(), false);
-		
+
+		if (workingDirectory != null) {
+			executor.setWorkingDirectory(workingDirectory);
+			String relative = relativizePath(workingDirectory, testCase);
+			testCaseCommandLine.addArgument(relative, false);
+		}
+		else {
+			testCaseCommandLine.addArgument(testCase.getPath(), false);
+		}
+
 		try {
 			executor.execute(testCaseCommandLine); // TODO configure environment ?
 			// XXX breaking Demeter's law for the report
@@ -108,5 +126,11 @@ public class VarnishtestRunner {
 			// XXX breaking Demeter's law for the report
 			throw new VarnishtestException(executor.getStreamHandler().getReport(), e);
 		}
+	}
+
+	private String relativizePath(File parent, File child) {
+		assert parent != null;
+		assert child != null;
+		return parent.getAbsoluteFile().toURI().relativize( child.getAbsoluteFile().toURI() ).getPath();
 	}
 }

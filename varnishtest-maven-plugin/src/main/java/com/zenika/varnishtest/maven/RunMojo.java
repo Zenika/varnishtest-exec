@@ -38,6 +38,12 @@ public class RunMojo extends AbstractMojo {
 	private MavenProject project;
 
 	/**
+	 * Working directory for varnishtest execution.
+	 */
+	@Parameter(defaultValue = "${project.basedir}", property = "varnishtest.workingDirectory")
+	private File workingDirectory;
+
+	/**
 	 * Base directory where all reports are written to.
 	 */
 	@Parameter(defaultValue = "${project.build.directory}/varnishtest-reports", property = "varnishtest.reportsDirectory")
@@ -63,7 +69,7 @@ public class RunMojo extends AbstractMojo {
 	 * {@code test} parameter is not specified, the default includes will be
 	 * <pre> {@code<includes>
 	 *   <include>src/test/varnish/**.vtc</include>
- 	 * </includes>}</pre>
+	 * </includes>}</pre>
 	 * <p/>
 	 * Each include item may also contain a comma-separated sublist of items,
 	 * which will be treated as multiple {@code<include>} entries.
@@ -101,7 +107,7 @@ public class RunMojo extends AbstractMojo {
 	 */
 	@Parameter(defaultValue = "false", property = "varnishtest.skip")
 	private boolean skip = false;
-	
+
 	/**
 	 * Runs the tests.
 	 * 
@@ -110,27 +116,27 @@ public class RunMojo extends AbstractMojo {
 	 */
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
-		
+
 		if ( isSkipped() ) {
 			getLog().info("Varnish tests are skipped.");
 			return;
 		}
-		
+
 		createReportsDirectory();
-		
+
 		CommandLineBuilder builder = new CommandLineBuilder()
 			.setVarnishtestCommand(varnishtestCommand)
 			.setVarnishdCommand(varnishdCommand);
-		
+
 		if (macros != null) {
 			builder.setMacros(macros);
 		}
-		
+
 		int testCaseCounter = 1;
 		LogOutputHandler handler = new LogOutputHandler(getLog());
-		
+
 		for (String testCase : getTestCases()) {
-			VarnishtestRunner runner = new VarnishtestRunner(builder);
+			VarnishtestRunner runner = new VarnishtestRunner(builder, workingDirectory);
 			try {
 				File testCaseFile = new File(getBasedir(), testCase);
 				VarnishtestReport report = runner.runTestCase(testCaseFile, handler, timeout);
@@ -171,29 +177,29 @@ public class RunMojo extends AbstractMojo {
 	private boolean isPropertyTrueOrEmpty(String property) {
 		return Boolean.getBoolean(property) || "".equals(System.getProperty(property));
 	}
-	
+
 	private String[] getTestCases() {
 		DirectoryScanner scanner = new DirectoryScanner();
 		scanner.setBasedir(getBasedir());
 		scanner.setIncludes(getIncludes());
 		scanner.setExcludes(getExcludes());
 		scanner.scan();
-		
+
 		String[] testCases = scanner.getIncludedFiles();
 		return testCases != null ? testCases : EMPTY_STRING_ARRAY;
 	}
-	
+
 	private File getBasedir() {
 		return project.getBasedir();
 	}
-	
+
 	private String[] getExcludes() {
 		if (excludes == null || excludes.isEmpty()) {
 			return EMPTY_STRING_ARRAY;
 		}
 		return excludes.toArray(EMPTY_STRING_ARRAY);
 	}
-	
+
 	private String[] getIncludes() {
 		if (includes == null || includes.isEmpty()) {
 			return DEFAULT_INCLUDE;
