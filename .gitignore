@@ -1,0 +1,22 @@
+# javac/maven
+#
+*.class
+*.?ar
+target/
+
+# intellij
+#
+.idea/
+*.iml
+
+# eclipse
+#
+.project
+.classpath
+.settings/
+
+# misc
+#
+*~
+*.swp
+
