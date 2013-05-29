@@ -26,6 +26,13 @@ public class VarnishtestRunner {
 		this(commandLineBuilder, null);
 	}
 
+	/**
+	 * Constructor.
+	 * @param commandLineBuilder the command line with common arguments
+	 * @param workingDirectory working directory for varnishtest executions
+	 *
+	 * @since 0.2
+	 */
 	public VarnishtestRunner(CommandLineBuilder commandLineBuilder, File workingDirectory) {
 		if (commandLineBuilder == null) {
 			throw new NullPointerException("Null command line");

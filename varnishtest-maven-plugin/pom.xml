@@ -38,11 +38,19 @@
 							<goal>descriptor</goal>
 						</goals>
 					</execution>
+					<execution>
+						<goals>
+							<goal>report</goal>
+						</goals>
+						<phase>post-integration-test</phase>
+						<configuration>
+							<outputDirectory>${project.basedir}/../target/generated-site/xdoc</outputDirectory>
+						</configuration>
+					</execution>
 				</executions>
 			</plugin>
 			<plugin>
 				<artifactId>maven-invoker-plugin</artifactId>
-				<version>1.7</version>
 				<configuration>
 					<localRepositoryPath>${project.build.directory}/it-repo</localRepositoryPath>
 					<cloneProjectsTo>${project.build.directory}/it-modules</cloneProjectsTo>
@@ -86,6 +94,12 @@
 					<excludes>
 						<exclude>com/zenika/varnishtest/maven/HelpMojo</exclude>
 					</excludes>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-site-plugin</artifactId>
+				<configuration>
+					<skip>true</skip>
 				</configuration>
 			</plugin>
 		</plugins>

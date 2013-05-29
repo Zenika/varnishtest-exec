@@ -39,6 +39,7 @@ public class RunMojo extends AbstractMojo {
 
 	/**
 	 * Working directory for varnishtest execution.
+	 * @since 0.2
 	 */
 	@Parameter(defaultValue = "${project.basedir}", property = "varnishtest.workingDirectory")
 	private File workingDirectory;

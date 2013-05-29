@@ -6,6 +6,7 @@ import com.zenika.varnishtest.CommandLineBuilder;
  * Representation of a single varnishtest macro.
  *
  * @author Dridi Boukelmoune
+ * @ant.element
  */
 public class Macro {
 

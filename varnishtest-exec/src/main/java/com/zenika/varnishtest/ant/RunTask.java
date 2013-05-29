@@ -19,7 +19,7 @@ import com.zenika.varnishtest.VarnishtestRunner;
 /**
  * Run tests with varnishtest.
  *
- * <pre>{@code<project xmlns:varnishtest="antlib:com.zenika.varnishtest.ant"
+ * <pre>{@code <project xmlns:varnishtest="antlib:com.zenika.varnishtest.ant"
  *     name="minimal-configuration" basedir="." default="test">
  * 
  *     <target name="test" description="Run varnishtest">
@@ -33,7 +33,7 @@ import com.zenika.varnishtest.VarnishtestRunner;
  * </project>}</pre>
  *
  * @author Dridi Boukelmoune
- * @ant.task category="varnish"
+ * @ant.task
  */
 public class RunTask extends Task {
 
@@ -51,6 +51,10 @@ public class RunTask extends Task {
 	private int timeout = DEFAULT_TIMEOUT;
 	private int testCaseCounter = 1;
 
+	/**
+	 * Initialize default values.
+	 * @since 0.2
+	 */
 	@Override
 	public void init() {
 		workingDirectory = getProject().getBaseDir();
@@ -163,6 +167,8 @@ public class RunTask extends Task {
 	 * Set the directory in which varnishtest will be executed,
 	 * defaults to the base directory.
 	 * @param workingDirectory The working directory
+	 *
+	 * @since 0.2
 	 */
 	public void setWorkingDirectory(File workingDirectory) {
 		this.workingDirectory = workingDirectory;

@@ -25,7 +25,7 @@ import org.apache.commons.exec.CommandLine;
  */
 public class CommandLineBuilder {
 	
-	private static final String MACRO_NAME_REGEX = "\\w+(\\.\\w+)*";
+	public  static final String MACRO_NAME_REGEX = "\\w+(\\.\\w+)*";
 	private static final Pattern MACRO_NAME_PATTERN = Pattern.compile(MACRO_NAME_REGEX);
 	private static final List<String> RESERVED_MACROS = Arrays.asList("varnishd", "pwd", "tmpdir", "bad_ip");
 

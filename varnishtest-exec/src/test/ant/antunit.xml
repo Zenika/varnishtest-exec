@@ -3,9 +3,11 @@
 		name="antunit" basedir="." default="antunit">
 
 	<target name="antunit">
+		<mkdir dir="antunit-reports"/>
 		<au:antunit>
 			<fileset dir="." includes="*/build.xml"/>
 			<au:plainlistener/>
+			<au:xmllistener todir="antunit-reports"/>
 		</au:antunit>
 	</target>
 </project>

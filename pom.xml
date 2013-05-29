@@ -14,7 +14,7 @@
 	<version>0.2-SNAPSHOT</version>
 
 	<name>Varnishtest Java executor parent</name>
-	<url>http://github.com/zenika/varnishtest-exec</url>
+	<url>http://zenika.github.io/varnishtest-exec</url>
 
 	<inceptionYear>2012</inceptionYear>
 
@@ -53,6 +53,8 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<surefire.version>2.12</surefire.version>
+		<maven.invoker.plugin.version>1.7</maven.invoker.plugin.version>
 	</properties>
 
 	<build>
@@ -66,6 +68,22 @@
 						<source>1.6</source>
 						<target>1.6</target>
 					</configuration>
+				</plugin>
+				<plugin>
+					<artifactId>maven-resources-plugin</artifactId>
+					<version>2.6</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<version>${surefire.version}</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-site-plugin</artifactId>
+					<version>3.0</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-invoker-plugin</artifactId>
+					<version>${maven.invoker.plugin.version}</version>
 				</plugin>
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
@@ -83,19 +101,116 @@
 		</pluginManagement>
 	</build>
 
-	<dependencies>
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-exec</artifactId>
-			<version>1.1</version>
-		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.7</version>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
+	<reporting>
+		<excludeDefaults>true</excludeDefaults>
+		<plugins>
+			<plugin>
+				<artifactId>maven-project-info-reports-plugin</artifactId>
+				<version>2.7</version>
+				<inherited>false</inherited>
+				<reportSets>
+					<reportSet>
+						<reports>
+							<report>license</report>
+							<report>project-team</report>
+						</reports>
+					</reportSet>
+				</reportSets>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jxr-plugin</artifactId>
+				<version>2.3</version>
+				<inherited>false</inherited>
+				<reportSets>
+					<reportSet>
+						<reports>
+							<report>jxr</report>
+						</reports>
+					</reportSet>
+				</reportSets>
+				<configuration>
+					<aggregate>true</aggregate>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.9</version>
+				<inherited>false</inherited>
+				<reportSets>
+					<reportSet>
+						<reports>
+							<report>javadoc</report>
+						</reports>
+					</reportSet>
+				</reportSets>
+				<configuration>
+					<aggregate>true</aggregate>
+					<quiet>true</quiet>
+					<groups>
+						<group>
+							<title>Core library</title>
+							<packages>com.zenika.varnishtest</packages>
+						</group>
+						<group>
+							<title>Ant task</title>
+							<packages>com.zenika.varnishtest.ant</packages>
+						</group>
+						<group>
+							<title>Maven plugin</title>
+							<packages>com.zenika.varnishtest.maven</packages>
+						</group>
+					</groups>
+					<tags>
+						<tag>
+							<name>ant.task</name>
+							<placement>Xt</placement>
+							<head>Task:</head>
+						</tag>
+						<tag>
+							<name>ant.element</name>
+							<placement>Xt</placement>
+							<head>Nested element:</head>
+						</tag>
+					</tags>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-surefire-report-plugin</artifactId>
+				<version>${surefire.version}</version>
+				<inherited>false</inherited>
+				<reportSets>
+					<reportSet>
+						<id>junit-report</id>
+						<reports>
+							<report>report-only</report>
+						</reports>
+						<configuration>
+							<aggregate>true</aggregate>
+						</configuration>
+					</reportSet>
+					<reportSet>
+						<id>antunit-report</id>
+						<reports>
+							<report>failsafe-report-only</report>
+						</reports>
+						<configuration>
+							<outputName>antunit-report</outputName>
+							<reportsDirectory>${project.basedir}/varnishtest-exec/target/ant/antunit-reports</reportsDirectory>
+						</configuration>
+					</reportSet>
+				</reportSets>
+			</plugin>
+			<plugin>
+				<artifactId>maven-invoker-plugin</artifactId>
+				<version>${maven.invoker.plugin.version}</version>
+				<inherited>false</inherited>
+				<configuration>
+					<reportsDirectory>${project.basedir}/varnishtest-maven-plugin/target/invoker-reports</reportsDirectory>
+				</configuration>
+			</plugin>
+		</plugins>
+	</reporting>
 
 	<modules>
 		<module>varnishtest-exec</module>
