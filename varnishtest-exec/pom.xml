@@ -34,8 +34,7 @@
 						</goals>
 						<configuration>
 							<target>
-								<ant inheritAll="false" antfile="${project.build.directory}/ant/minimal-configuration/build.xml" />
-								<ant inheritAll="false" antfile="${project.build.directory}/ant/write-reports/build.xml" />
+								<ant inheritAll="false" antfile="${project.build.directory}/ant/antunit.xml" />
 							</target>
 						</configuration>
 					</execution>

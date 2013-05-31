@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:au="antlib:org.apache.ant.antunit"
+		name="antunit" basedir="." default="antunit">
+
+	<target name="antunit">
+		<au:antunit>
+			<fileset dir="." includes="*/build.xml"/>
+			<au:plainlistener/>
+		</au:antunit>
+	</target>
+</project>

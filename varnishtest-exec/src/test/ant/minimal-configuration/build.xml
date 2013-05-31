@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project
 	xmlns:varnishtest="antlib:com.zenika.varnishtest.ant"
-	name="minimal-configuration" basedir="." default="test">
+	xmlns:au="antlib:org.apache.ant.antunit">
 
-	<target name="test" description="Run varnishtest">
+	<target name="test-minimal-configuration">
 		<varnishtest:run>
 			<fileset dir="src/test/varnish">
 			    <include name="**.vtc"/>
