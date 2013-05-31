@@ -9,9 +9,9 @@
 		<version>1.0-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>minimal-configuration</artifactId>
+	<artifactId>reports-directory</artifactId>
 
-	<name>Test module for minimal configuration</name>
+	<name>Test module with a custom reports directory</name>
 
 	<build>
 		<plugins>
@@ -25,6 +25,9 @@
 						</goals>
 					</execution>
 				</executions>
+				<configuration>
+					<reportsDirectory>${project.build.directory}/varnish</reportsDirectory>
+				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

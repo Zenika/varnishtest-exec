@@ -62,6 +62,7 @@
 						<extraArtifact>org.apache.maven.plugins:maven-surefire-plugin:2.12:maven-plugin</extraArtifact>
 						<extraArtifact>org.apache.maven.plugins:maven-jar-plugin:2.3.2:maven-plugin</extraArtifact>
 						<extraArtifact>org.apache.maven.plugins:maven-war-plugin:2.1.1:maven-plugin</extraArtifact>
+						<extraArtifact>org.apache.maven.plugins:maven-verifier-plugin:1.0:maven-plugin</extraArtifact>
 						<extraArtifact>org.apache.tomcat.maven:tomcat6-maven-plugin:2.0:maven-plugin</extraArtifact>
 
 						<extraArtifact>org.apache.maven.surefire:surefire-junit3:2.12:jar</extraArtifact>

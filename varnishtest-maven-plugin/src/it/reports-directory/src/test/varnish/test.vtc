@@ -1,0 +1,1 @@
+varnishtest "varnishtest launched within maven"
