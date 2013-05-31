@@ -1,0 +1,3 @@
+varnishtest "failing test"
+
+varnish v1 -expect cache_miss == 0
