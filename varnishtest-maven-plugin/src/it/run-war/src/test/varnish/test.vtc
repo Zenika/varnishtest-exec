@@ -1,0 +1,25 @@
+varnishtest "backend launched within maven"
+
+varnish v1 -arg "-f ${pwd}/target/config/default.vcl" -start
+
+client c1 {
+	txreq -url "/"
+	rxresp
+	expect resp.status == 200
+	expect resp.bodylen == 4
+}
+
+varnish v1 -expect cache_miss == 0
+varnish v1 -expect cache_hit == 0
+
+client c1 -run
+
+varnish v1 -expect cache_miss == 1
+varnish v1 -expect cache_hit == 0
+
+client c1 -run
+client c1 -run
+client c1 -run
+
+varnish v1 -expect cache_miss == 1
+varnish v1 -expect cache_hit == 3
