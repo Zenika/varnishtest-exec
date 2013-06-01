@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+	xmlns:varnishtest="antlib:com.zenika.varnishtest.ant"
+	xmlns:au="antlib:org.apache.ant.antunit">
+
+	<target name="test-failing-test">
+		<au:expectfailure>
+			<varnishtest:run>
+				<file file="src/test/varnish/failing-test.vtc"/>
+			</varnishtest:run>
+		</au:expectfailure>
+	</target>
+
+	<target name="test-failing-test-report">
+		<au:expectfailure>
+			<varnishtest:run reportsDirectory="target/varnishtest-reports">
+				<file file="src/test/varnish/failing-test.vtc"/>
+			</varnishtest:run>
+		</au:expectfailure>
+		<au:assertFileExists file="target/varnishtest-reports/TEST-0001-failing_test.log"/>
+	</target>
+
+	<target name="test-forbidden-macro">
+		<au:expectfailure>
+			<varnishtest:run>
+				<file file="src/test/varnish/test.vtc"/>
+				<macros>
+					<macro name="varnishd" value="/usr/sbin/varnishd"/>
+				</macros>
+			</varnishtest:run>
+		</au:expectfailure>
+	</target>
+
+</project>
