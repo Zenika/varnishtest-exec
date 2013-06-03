@@ -1,10 +1,7 @@
 package com.zenika.varnishtest;
 
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.apache.commons.exec.CommandLine;
@@ -30,6 +27,7 @@ public class CommandLineBuilder {
 	
 	private static final String MACRO_NAME_REGEX = "\\w+(\\.\\w+)*";
 	private static final Pattern MACRO_NAME_PATTERN = Pattern.compile(MACRO_NAME_REGEX);
+	private static final List<String> RESERVED_MACROS = Arrays.asList("varnishd", "pwd", "tmpdir", "bad_ip");
 
 	private String varnishtestCommand = "varnishtest";
 	private String varnishdCommand = "varnishd";
@@ -159,8 +157,8 @@ public class CommandLineBuilder {
 		if (name == null || value == null) {
 			throw new NullPointerException("Null name or value");
 		}
-		if ( "varnishd".equals(name) ) { // the only reserved macro so far
-			throw new IllegalArgumentException("The macro `varnishd' is not allowed");
+		if ( RESERVED_MACROS.contains(name) ) {
+			throw new IllegalArgumentException("The macro `" + name + "' is not allowed");
 		}
 		if ( MACRO_NAME_PATTERN.matcher(name).matches() ) {
 			macros.put(name, value);

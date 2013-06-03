@@ -20,15 +20,27 @@
 		<au:assertFileExists file="target/varnishtest-reports/TEST-0001-failing_test.log"/>
 	</target>
 
-	<target name="test-forbidden-macro">
-		<au:expectfailure>
-			<varnishtest:run>
-				<file file="src/test/varnish/test.vtc"/>
-				<macros>
-					<macro name="varnishd" value="/usr/sbin/varnishd"/>
-				</macros>
-			</varnishtest:run>
-		</au:expectfailure>
+	<!-- define an ant macro to test reserved varnishtest macros \o/ -->
+	<macrodef name="use-reserved-macro">
+		<attribute name="name"/>
+		<attribute name="value"/>
+		<sequential>
+			<au:expectfailure>
+				<varnishtest:run>
+					<file file="src/test/varnish/test.vtc"/>
+					<macros>
+						<macro name="${name}" value="${value}"/>
+					</macros>
+				</varnishtest:run>
+			</au:expectfailure>
+		</sequential>
+	</macrodef>
+
+	<target name="test-reserved-macros">
+		<use-reserved-macro name="varnishd" value="/usr/sbin/varnishd"/>
+		<use-reserved-macro name="pwd"      value="/tmp"/>
+		<use-reserved-macro name="tmpdir"   value="/tmp"/>
+		<use-reserved-macro name="bad_ip"   value="127.0.0.1"/>
 	</target>
 
 </project>
