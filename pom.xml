@@ -113,6 +113,7 @@
 						<reports>
 							<report>license</report>
 							<report>project-team</report>
+							<report>dependency-convergence</report>
 						</reports>
 					</reportSet>
 				</reportSets>

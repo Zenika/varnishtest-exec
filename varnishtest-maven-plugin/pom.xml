@@ -10,7 +10,9 @@
 
 	<artifactId>varnishtest-maven-plugin</artifactId>
 	<packaging>maven-plugin</packaging>
+
 	<name>Maven plugin for varnishtest</name>
+	<url>http://zenika.github.io/varnishtest-exec</url>
 
 	<properties>
 		<it.server.port>9080</it.server.port>

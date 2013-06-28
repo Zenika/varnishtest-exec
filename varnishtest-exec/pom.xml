@@ -9,7 +9,9 @@
 	</parent>
 
 	<artifactId>varnishtest-exec</artifactId>
+
 	<name>Varnishtest Java executor</name>
+	<url>http://zenika.github.io/varnishtest-exec</url>
 
 	<properties>
 		<ant.version>1.7.0</ant.version>
