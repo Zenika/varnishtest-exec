@@ -31,6 +31,7 @@
 			<item name="Introduction" href="index.html" />
 			<item name="Ant Task" href="ant-task.html" />
 			<item name="Maven Plugin" href="maven-plugin.html" />
+			<item name="Changelog" href="changelog.html" />
 		</menu>
 		<menu ref="reports" />
 		<menu name="Zenika">
