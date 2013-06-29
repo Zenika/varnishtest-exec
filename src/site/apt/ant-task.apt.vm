@@ -99,8 +99,8 @@ Nested Elements
 
   It is possible to pass macros to <<<varnishtest>>> with a <<<-Dname=value>>>
   argument in the command line. In your test case, any occurrence of
-  <<<${project.name}>>> will be substitued by <<<value>>>. Some macros are reserved and
-  defined by <<<varnishtest>>>:
+  <<<$\{name\}>>> will be substituted by <<<value>>>. Some macros are reserved
+  and defined by <<<varnishtest>>>:
 
   * <<bad_ip:>> A bad IP address useful to test backend failures.
 
