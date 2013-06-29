@@ -14,3 +14,97 @@
 
 Varnishtest Maven Plugin
 
+  Goals available for this plugin:
+
+*--------------------------------------------+---------------------------------+
+  Goal                                       | Description
+*--------------------------------------------+---------------------------------+
+  {{{./run-mojo.html}varnishtest:run}}       | Runs tests with varnishtest.
+*--------------------------------------------+---------------------------------+
+
+  Or call <<<mvn help:describe -Dplugin=com.zenika:varnishtest-maven-plugin>>>
+  to display parameter details in your command line interface.
+
+System Requirements
+
+  The following specifies the minimum requirements to run this Maven plugin:
+
+*------------+-------------------------+
+  Varnish    | 3.0.x
+*------------+-------------------------+
+  Maven      | 3.0
+*------------+-------------------------+
+  JDK        | 1.6
+*------------+-------------------------+
+  Memory     | No minimum requirement.
+*------------+-------------------------+
+  Disk Space | No minimum requirement.
+*------------+-------------------------+
+
+Usage
+
+  You should specify the version in your project's plugin configuration:
+
++--
+<project>
+  ...
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>com.zenika</groupId>
+        <artifactId>varnishtest-maven-plugin</artifactId>
+        <version>${project.version}</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      ...
+    </plugins>
+  </build>
+  ...
+</project>
++--
+
+  In a multi-module project you can configure the plugin in your parent POM:
+
++--
+<project>
+  ...
+  <build>
+    <!-- To define the plugin version in your parent POM -->
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>com.zenika</groupId>
+          <artifactId>varnishtest-maven-plugin</artifactId>
+          <version>${project.version}</version>
+          <executions>
+            <execution>
+              <goals>
+                <goal>run</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        ...
+      </plugins>
+    </pluginManagement>
+    <!-- To use the plugin goals in your POM or parent POM -->
+    <plugins>
+      <plugin>
+        <groupId>com.zenika</groupId>
+        <artifactId>varnishtest-maven-plugin</artifactId>
+      </plugin>
+      ...
+    </plugins>
+  </build>
+  ...
+</project>
++--
+
+  For more information, see
+  {{{http://maven.apache.org/guides/mini/guide-configuring-plugins.html}"Guide to Configuring Plug-ins"}}

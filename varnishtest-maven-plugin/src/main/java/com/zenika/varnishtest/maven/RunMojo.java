@@ -21,7 +21,7 @@ import com.zenika.varnishtest.VarnishtestReport;
 import com.zenika.varnishtest.VarnishtestRunner;
 
 /**
- * Run tests with varnishtest.
+ * Runs tests with varnishtest.
  * 
  * @author Dridi Boukelmoune
  */

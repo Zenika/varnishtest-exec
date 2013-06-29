@@ -12,4 +12,55 @@
 ~~ See the License for the specific language governing permissions and
 ~~ limitations under the License.
 
-Welcome to varnishtest-exec!
+Welcome to varnishtest-exec !
+
+  <<<varnishtest-exec>>> is a portable Java library for varnishtest, the test
+  framework for {{{http://www.varnish-cache.org/}Varnish Cache}}. This
+  framework is used by the Varnish project, and usually module (VMOD)
+  developers. But as a Varnish user, you can and *should* use it too.
+
+  <<<varnishtest-exec>>> was named after
+  {{{http://commons.apache.org/proper/commons-exec/}commons-exec}}, which is a
+  very nice library for external process execution inside a JVM. Despite being
+  very old, <<<commons-exec>>> does a good job, and it's your only dependency
+  when using <<<varnishtest-exec>>>. You'll probably don't want to actually use
+  the library, so instead, have a look at the Ant task and the Maven plugin.
+
+* The Ant task
+
+  With <<<varnishtest-exec>>> in your Ant <classpath>, you can use it this way:
+
++--
+<project xmlns:varnishtest="antlib:com.zenika.varnishtest.ant">
+    <target name="integration-test">
+        <varnishtest:run>
+            <fileset dir="src/test/varnish">
+                <include name="**.vtc"/>
+            </fileset>
+        </varnishtest:run>
+    </target>
+</project>
++--
+
+  For more information, see the task {{{./ant-task.html}documentation}}.
+
+* The Maven plugin
+
+  For Maven users, you can use the <<<varnishtest-maven-plugin>>> instead:
+
++--
+<plugin>
+    <groupId>com.zenika</groupId>
+    <artifactId>varnishtest-maven-plugin</artifactId>
+    <version>${project.version}</version>
+    <executions>
+        <execution>
+            <goals>
+                <goal>run</goal>
+            </goals>
+        </execution>
+    </executions>
+</plugin>
++--
+
+  For more information, see the plugin {{{./maven-plugin.html}documentation}}.

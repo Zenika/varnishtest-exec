@@ -17,7 +17,7 @@ import com.zenika.varnishtest.VarnishtestReport;
 import com.zenika.varnishtest.VarnishtestRunner;
 
 /**
- * Run tests with varnishtest.
+ * Runs tests with varnishtest.
  *
  * <pre>{@code <project xmlns:varnishtest="antlib:com.zenika.varnishtest.ant"
  *     name="minimal-configuration" basedir="." default="test">

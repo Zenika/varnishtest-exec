@@ -13,3 +13,123 @@
 ~~ limitations under the License.
 
 Varnishtest Ant Task
+
+Description
+
+  This task runs tests from the Varnish testing framework. This framework is
+  bundled with Varnish on major distributions, and actually uses Varnish under
+  the hood. The first requirement is to have Varnish installed somewhere on your
+  system. This task works with Ant 1.7.0 or any later version.
+
+  You can download <<<varnishtest-exec>>> from the Maven central:
+
+  * {{{http://search.maven.org/remotecontent?filepath=com/zenika/varnishtest-exec/${project.version}/varnishtest-exec-${project.version}.jar}varnishtest-exec-${project.version}}}
+
+  * {{{http://search.maven.org/remotecontent?filepath=org/apache/commons/commons-exec/1.1/commons-exec-1.1.jar}commons-exec-1.1.jar}}
+
+  []
+
+  <<Note:>> You must have <<<varnishtest-exec>>> available. You can do one of:
+
+  * Put both <<<varnishtest-exec-${project.version}.jar>>> and
+    <<<commons-exec-1.1.jar>>> in <<<ANT_HOME/lib>>>.
+
+  * Do not put either in <<<ANT_HOME/lib>>>, and instead include their locations
+    in your <<<CLASSPATH>>> environment variable.
+
+  * Add both JARs to your classpath using <<<-lib>>>.
+
+  * Specify the locations of both JARs using a <<<\<classpath\>>>> element in a
+    <<<\<taskdef\>>>> in the build file. The JARs can be first retrieved using
+    {{{http://ant.apache.org/ivy/}Ivy}}.
+
+  []
+
+  If you put <<<varnishtest-exec>>> in your Ant <classpath>, you can use it this
+  way:
+
++--
+<project xmlns:varnishtest="antlib:com.zenika.varnishtest.ant">
+    <target name="integration-test">
+        <varnishtest:run>
+            <fileset dir="src/test/varnish">
+                <include name="**.vtc"/>
+            </fileset>
+        </varnishtest:run>
+    </target>
+</project>
++--
+
+Parameters
+
+~~ copy/paste/rearrange from the javadocs
+
+*--------------------+-----------------------------------------+---------------+
+  Attribute 	     | Description 	                           | Required
+*--------------------+-----------------------------------------+---------------+
+  reportsDirectory   | Set the directory where the reports     | No.
+                     | will be written.
+*--------------------+-----------------------------------------+---------------+
+  timeout            | Set the per-test timeout in seconds.    | No, defaults
+                     |                                         | to 20 seconds.
+*--------------------+-----------------------------------------+---------------+
+  varnishdCommand    | Set a different command for             | No, defaults
+                     | <<<varnishd>>>, for instance            | to <<<varnishd>>>.
+                     | <<</usr/sbin/varnishd>>> for            |
+                     | unprivileged users without              |
+                     | <<</usr/sbin>>> in their <<<PATH>>>.    |
+*--------------------+-----------------------------------------+---------------+
+  varnishtestCommand | Set a different command for             | No, defaults
+                     | <<<varnishtest>>>, for instance         | to <<<varnishtest>>>.
+                     | <<</usr/local/bin/varnishtest>>>.       |
+*--------------------+-----------------------------------------+---------------+
+  workingDirectory   | Set the directory in which varnishtest  | No, defaults
+                     | will be executed. <<Since: 0.2>>        | to the base
+                     |                                         | directory.
+*--------------------+-----------------------------------------+---------------+
+
+Nested Elements
+
+  The <<<\<varnishtest:run\>>>> task supports a nested <<<\<macro\>>>> element
+  to pass arguments to <<<varnishtest>>>. It also collects the test files from
+  any number of nested file-only
+  {{{http://ant.apache.org/manual/Types/resources.html#collection}Resource Collections}}.
+
+* macro
+
+  It is possible to pass macros to <<<varnishtest>>> with a <<<-Dname=value>>>
+  argument in the command line. In your test case, any occurrence of
+  <<<${project.name}>>> will be substitued by <<<value>>>. Some macros are reserved and
+  defined by <<<varnishtest>>>:
+
+  * <<bad_ip:>> A bad IP address useful to test backend failures.
+
+  * <<pwd:>> The test case working directory.
+
+  * <<tmpdir:>> The test case temporary directory.
+
+  * <<varnishd:>> This one is actually defined by <<<varnishtest-exec>>>.
+
+  []
+
+~~ copy/paste/rearrange from the javadocs
+
+*-----------+--------------------------------------------------+---------------+
+  Attribute | Description 	                                   | Required
+*-----------+--------------------------------------------------+---------------+
+  name      | Sets the name of the macro. The name should be   | Yes.
+            | unique or else this macro will be overridden.    |
+*-----------+--------------------------------------------------+---------------+
+  value     | Set the per-test timeout in seconds.             | Yes.
+*-----------+--------------------------------------------------+---------------+
+
+** Example
+
++--
+<varnishtest:run>
+  <file file="src/test/varnish/test.vtc"/>
+  <macros>
+    <macro name="backend_port" value="8080"/>
+  </macros>
+</varnishtest:run>
++--
