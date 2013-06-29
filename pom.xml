@@ -11,7 +11,7 @@
 	<groupId>com.zenika</groupId>
 	<artifactId>varnishtest-exec-parent</artifactId>
 	<packaging>pom</packaging>
-	<version>0.2</version>
+	<version>0.3-SNAPSHOT</version>
 
 	<name>Varnishtest Java executor parent</name>
 	<url>http://zenika.github.io/varnishtest-exec</url>
